@@ -292,7 +292,7 @@ async function initAdminPage() {
         ic: row.IC || "",
         phone: row.Phone || "",
         agent: row.AgentName || "",
-        agentPhone: "",
+        agentPhone: row.AgentPhone || "",
         agentId: row.AgentID || "",
         type: row.Type || "",
         status: row.Status || "New Submission",
