@@ -1,6 +1,6 @@
 const CONFIG = {
   APPS_SCRIPT_URL: "https://script.google.com/macros/s/AKfycbwlvRLS6XKBBLObcEcofuk7UvoPLj470nofWJ2ZdrEvCzmNU57S-EXE7J7zKTYQviL8MA/exec",
-  FRONTEND_BASE_URL: "https://chikajom.pages.dev"
+  FRONTEND_BASE_URL: "https://chika-jom-frontend.pages.dev/"
 };
 const LOGO_URL = "https://lh3.googleusercontent.com/d/1hftGSs3xj2bwCRFUTE6UmQMhX3uIrYqe";
 
