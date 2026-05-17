@@ -13,9 +13,20 @@
 <script>
 const password = prompt("Enter Admin Password");
 
-if(password !== "ChikaAdmin2026"){
-  alert("Access Denied");
-  window.location.href = "index.html";
+<script>
+const ADMIN_PASSWORD = "ChikaAdmin2026";
+
+if(sessionStorage.getItem("admin_auth") !== "true"){
+
+  const password = prompt("Enter Admin Password");
+
+  if(password === ADMIN_PASSWORD){
+    sessionStorage.setItem("admin_auth", "true");
+  } else {
+    alert("Access Denied");
+    window.location.href = "index.html";
+  }
+
 }
 </script>
   <div class="admin-layout">
