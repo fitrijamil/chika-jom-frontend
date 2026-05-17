@@ -748,7 +748,7 @@ function initAgentsPage() {
 
     script.onerror = reject;
     document.body.appendChild(script);
-  });
+  );
 }
 
 async function saveStatusUpdate() {
