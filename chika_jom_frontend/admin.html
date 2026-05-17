@@ -39,7 +39,7 @@ if(sessionStorage.getItem("admin_auth") !== "true"){
       </header>
 
       <section class="metric-grid">
-        <div class="card metric"><small>Jumlah Permohonan</small><b>248</b><small style="color:var(--green)">+12% dari bulan lepas</small></div>
+        <div class="card metric"><small>Jumlah Permohonan</small><b>248</b>
         <div class="card metric"><small>New Submission</small><b>32</b><small>Menunggu semakan</small></div>
         <div class="card metric"><small>In Review</small><b>45</b><small>Sedang diproses</small></div>
         <div class="card metric"><small>Approved</small><b>128</b><small>Diluluskan</small></div>
@@ -87,33 +87,7 @@ if(sessionStorage.getItem("admin_auth") !== "true"){
           </table>
         </div>
       </section>
-
-      <section class="dashboard-bottom">
-        <div class="card" style="padding:22px">
-          <h3>Ringkasan Hari Ini</h3>
-          <p>🏦 New Submission <b style="float:right">12</b></p>
-          <p>🔎 In Review <b style="float:right">18</b></p>
-          <p>🟣 Pending Document <b style="float:right">7</b></p>
-          <p>✅ Approved <b style="float:right">9</b></p>
-          <p>❌ Rejected <b style="float:right">3</b></p>
-        </div>
-        <div class="card" style="padding:22px">
-          <h3>Carta Permohonan</h3>
-          <svg width="100%" height="190" viewBox="0 0 540 190" preserveAspectRatio="none">
-            <polyline points="0,150 80,120 160,105 240,55 320,100 400,62 540,30" fill="none" stroke="#ffd21f" stroke-width="5"/>
-            <polygon points="0,150 80,120 160,105 240,55 320,100 400,62 540,30 540,190 0,190" fill="rgba(255,210,31,.2)"/>
-          </svg>
-        </div>
-      </section>
-
-      <section class="quick-actions">
-        <div class="card quick-card"><div class="icon-circle">📁</div><h3>Buka Folder Dokumen</h3><p>Lihat semua dokumen permohonan.</p><button class="btn btn-light">Buka Folder</button></div>
-        <div class="card quick-card"><div class="icon-circle">📝</div><h3>Kemas Kini Status</h3><p>Kemaskini status permohonan.</p><button class="btn btn-light">Kemas Kini</button></div>
-        <div class="card quick-card"><div class="icon-circle">🟢</div><h3>WhatsApp Agent</h3><p>Hantar mesej kepada ejen.</p><button class="btn btn-light">WhatsApp</button></div>
-      </section>
-    </main>
-  </div>
-
+      
   <div id="statusModal" class="modal">
     <div class="modal-box">
       <div class="modal-head">
