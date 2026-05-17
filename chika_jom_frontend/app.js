@@ -27,16 +27,12 @@ function statusBadge(status) {
   return '<span class="badge ' + cssClass + '">' + status + '</span>';
 }
 
-/* =========================
-   APPLY FORM
-========================= */
+/* APPLY FORM */
 
 function fileToBase64(file) {
   return new Promise(function(resolve, reject) {
     const reader = new FileReader();
-    reader.onload = function() {
-      resolve(reader.result);
-    };
+    reader.onload = function() { resolve(reader.result); };
     reader.onerror = reject;
     reader.readAsDataURL(file);
   });
@@ -44,7 +40,6 @@ function fileToBase64(file) {
 
 async function collectFile(inputId, label, files) {
   const input = $(inputId);
-
   if (!input || !input.files || !input.files[0]) return;
 
   const file = input.files[0];
@@ -64,7 +59,6 @@ async function collectFile(inputId, label, files) {
 
 function toggleInput(inputId, enabled, placeholder) {
   const el = $(inputId);
-
   if (!el) return;
 
   if (enabled) {
@@ -93,32 +87,17 @@ function toggleApplicationType() {
 
 function toggleSpouseSalary() {
   if (!$("spouseWorking")) return;
-
-  toggleInput(
-    "spouseNetSalary",
-    $("spouseWorking").value === "Ya",
-    "Contoh: RM2500"
-  );
+  toggleInput("spouseNetSalary", $("spouseWorking").value === "Ya", "Contoh: RM2500");
 }
 
 function toggleProfessionalCert() {
   if (!$("professionalCert")) return;
-
-  toggleInput(
-    "professionalCertName",
-    $("professionalCert").value === "Ya",
-    "BEM / MBOT / ACCA / MIA"
-  );
+  toggleInput("professionalCertName", $("professionalCert").value === "Ya", "BEM / MBOT / ACCA / MIA");
 }
 
 function toggleAkpk() {
   if (!$("akpk")) return;
-
-  toggleInput(
-    "akpkPeriod",
-    $("akpk").value === "Ya",
-    "Contoh: 1 tahun"
-  );
+  toggleInput("akpkPeriod", $("akpk").value === "Ya", "Contoh: 1 tahun");
 }
 
 function toggleCtos() {
@@ -142,25 +121,11 @@ function initApplyPage() {
     $("applicationType").value = type;
   }
 
-  if ($("applicationType")) {
-    $("applicationType").addEventListener("change", toggleApplicationType);
-  }
-
-  if ($("spouseWorking")) {
-    $("spouseWorking").addEventListener("change", toggleSpouseSalary);
-  }
-
-  if ($("professionalCert")) {
-    $("professionalCert").addEventListener("change", toggleProfessionalCert);
-  }
-
-  if ($("akpk")) {
-    $("akpk").addEventListener("change", toggleAkpk);
-  }
-
-  if ($("ctosOption")) {
-    $("ctosOption").addEventListener("change", toggleCtos);
-  }
+  if ($("applicationType")) $("applicationType").addEventListener("change", toggleApplicationType);
+  if ($("spouseWorking")) $("spouseWorking").addEventListener("change", toggleSpouseSalary);
+  if ($("professionalCert")) $("professionalCert").addEventListener("change", toggleProfessionalCert);
+  if ($("akpk")) $("akpk").addEventListener("change", toggleAkpk);
+  if ($("ctosOption")) $("ctosOption").addEventListener("change", toggleCtos);
 
   toggleApplicationType();
   toggleSpouseSalary();
@@ -175,7 +140,6 @@ async function handleApplySubmit(e) {
   e.preventDefault();
 
   const submitBtn = $("submitBtn");
-
   submitBtn.disabled = true;
   submitBtn.innerHTML = "UPLOADING... PLEASE WAIT";
 
@@ -223,14 +187,11 @@ async function handleApplySubmit(e) {
     await fetch(CONFIG.APPS_SCRIPT_URL, {
       method: "POST",
       mode: "no-cors",
-      headers: {
-        "Content-Type": "text/plain"
-      },
+      headers: { "Content-Type": "text/plain" },
       body: JSON.stringify(payload)
     });
 
     alert("Permohonan berjaya dihantar.");
-
     $("applyForm").reset();
 
     if (getParam("type") && $("applicationType")) {
@@ -252,31 +213,29 @@ async function handleApplySubmit(e) {
   }
 }
 
-/* =========================
-   ADMIN DASHBOARD REAL DATA
-========================= */
+/* JSONP HELPER */
 
-function loadApplicationsFromSheet() {
+function jsonpRequest(url) {
   return new Promise(function(resolve, reject) {
-    const callbackName = "cb_apps_" + Date.now();
+    const callbackName = "cb_" + Date.now() + "_" + Math.floor(Math.random() * 10000);
 
     window[callbackName] = function(data) {
-      resolve(data || []);
+      resolve(data);
       delete window[callbackName];
       script.remove();
     };
 
     const script = document.createElement("script");
-
-    script.src =
-      CONFIG.APPS_SCRIPT_URL +
-      "?action=getApplications&callback=" +
-      callbackName;
-
+    script.src = url + "&callback=" + callbackName;
     script.onerror = reject;
-
     document.body.appendChild(script);
   });
+}
+
+/* ADMIN DASHBOARD */
+
+function loadApplicationsFromSheet() {
+  return jsonpRequest(CONFIG.APPS_SCRIPT_URL + "?action=getApplications");
 }
 
 async function initAdminPage() {
@@ -285,7 +244,7 @@ async function initAdminPage() {
   try {
     const sheetData = await loadApplicationsFromSheet();
 
-    window.liveApplications = sheetData.map(function(row) {
+    window.liveApplications = (sheetData || []).map(function(row) {
       return {
         orderId: row.OrderID || "",
         name: row.CustomerName || "",
@@ -309,9 +268,7 @@ async function initAdminPage() {
   }
 
   ["searchInput", "statusFilter", "typeFilter", "agentFilter"].forEach(function(id) {
-    if ($(id)) {
-      $(id).addEventListener("input", filterApplications);
-    }
+    if ($(id)) $(id).addEventListener("input", filterApplications);
   });
 }
 
@@ -324,12 +281,7 @@ function filterApplications() {
   const agent = $("agentFilter") ? $("agentFilter").value : "";
 
   const filtered = source.filter(function(app) {
-    const text = (
-      app.orderId + " " +
-      app.name + " " +
-      app.ic + " " +
-      app.phone
-    ).toLowerCase();
+    const text = (app.orderId + " " + app.name + " " + app.ic + " " + app.phone).toLowerCase();
 
     return (!q || text.includes(q)) &&
       (!status || app.status === status) &&
@@ -342,25 +294,18 @@ function filterApplications() {
 
 function renderApplications(applications) {
   const tbody = $("applicationTableBody");
-
   if (!tbody) return;
 
   tbody.innerHTML = "";
 
   if (!applications || applications.length === 0) {
     tbody.innerHTML =
-      '<tr>' +
-      '<td colspan="9" style="text-align:center;padding:30px;">' +
-      'Tiada data permohonan' +
-      '</td>' +
-      '</tr>';
+      '<tr><td colspan="9" style="text-align:center;padding:30px;">Tiada data permohonan</td></tr>';
     return;
   }
 
-  const list = applications.slice().reverse();
-
-  list.forEach(function(app) {
-    const row =
+  applications.slice().reverse().forEach(function(app) {
+    tbody.innerHTML +=
       '<tr>' +
       '<td>' + (app.orderId || "-") + '</td>' +
       '<td><strong>' + (app.name || "-") + '</strong></td>' +
@@ -369,19 +314,9 @@ function renderApplications(applications) {
       '<td>' + (app.agent || "-") + '</td>' +
       '<td>' + (app.type || "-") + '</td>' +
       '<td>' + statusBadge(app.status || "New Submission") + '</td>' +
-      '<td>' +
-      (
-        app.folder && app.folder !== "#"
-          ? '<a href="' + app.folder + '" target="_blank">📁 Folder</a>'
-          : "-"
-      ) +
-      '</td>' +
-      '<td>' +
-      '<button class="btn btn-small btn-black" onclick="openStatusModalById(\'' + app.orderId + '\')">Update</button>' +
-      '</td>' +
+      '<td>' + (app.folder && app.folder !== "#" ? '<a href="' + app.folder + '" target="_blank">📁 Folder</a>' : "-") + '</td>' +
+      '<td><button class="btn btn-small btn-black" onclick="openStatusModalById(\'' + app.orderId + '\')">Update</button></td>' +
       '</tr>';
-
-    tbody.innerHTML += row;
   });
 }
 
@@ -389,12 +324,8 @@ function updateDashboardCards(applications) {
   const total = applications.length;
   const newSub = applications.filter(function(x) { return x.status === "New Submission"; }).length;
   const review = applications.filter(function(x) { return x.status === "In Review"; }).length;
-  const approved = applications.filter(function(x) {
-    return x.status === "Approved" || x.status === "Layak";
-  }).length;
-  const rejected = applications.filter(function(x) {
-    return x.status === "Rejected" || x.status === "Tak Layak";
-  }).length;
+  const approved = applications.filter(function(x) { return x.status === "Approved" || x.status === "Layak"; }).length;
+  const rejected = applications.filter(function(x) { return x.status === "Rejected" || x.status === "Tak Layak"; }).length;
 
   const metrics = document.querySelectorAll(".metric b");
 
@@ -407,19 +338,13 @@ function updateDashboardCards(applications) {
   }
 }
 
-/* =========================
-   STATUS MODAL + WHATSAPP
-========================= */
+/* STATUS UPDATE + WHATSAPP */
 
 function openStatusModalById(orderId) {
   const apps = window.liveApplications || [];
-  const app = apps.find(function(x) {
-    return x.orderId === orderId;
-  });
+  const app = apps.find(function(x) { return x.orderId === orderId; });
 
-  if (app) {
-    openStatusModal(app);
-  }
+  if (app) openStatusModal(app);
 }
 
 function openStatusModal(app) {
@@ -429,23 +354,19 @@ function openStatusModal(app) {
   if ($("modalOrderId")) $("modalOrderId").value = app.orderId || "";
   if ($("modalAgentName")) $("modalAgentName").value = app.agent || "";
   if ($("modalAgentPhone")) $("modalAgentPhone").value = app.agentPhone || "";
+  if ($("statusSelect")) $("statusSelect").value = app.status || "New Submission";
 
   $("statusModal").classList.add("show");
-
   previewWhatsapp();
 }
 
 function closeStatusModal() {
-  if ($("statusModal")) {
-    $("statusModal").classList.remove("show");
-  }
+  if ($("statusModal")) $("statusModal").classList.remove("show");
 }
 
 function formatMoney(value) {
   if (!value) return "";
-  return String(value)
-    .replace(/[^\d]/g, "")
-    .replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  return String(value).replace(/[^\d]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
 
 function buildWhatsappMessage() {
@@ -487,36 +408,24 @@ function buildWhatsappMessage() {
     "New Submission": "🆕 New Submission"
   };
 
-  let bulletRemark = "";
-
-  if (remark) {
-    bulletRemark = remark
-      .split("\n")
-      .filter(Boolean)
-      .map(function(x) {
+  const bulletRemark = remark
+    ? remark.split("\n").filter(Boolean).map(function(x) {
         return "• " + x.replace(/^•\s*/, "");
-      })
-      .join("\n");
-  }
+      }).join("\n")
+    : "";
 
   return "CLIENT : " + customer + "\n" +
     "AGENT : " + agent + "\n\n" +
-    "REMARK :\n" +
-    bulletRemark + "\n\n" +
-    "STATUS :\n" +
-    (statusMap[status] || status);
+    "REMARK :\n" + bulletRemark + "\n\n" +
+    "STATUS :\n" + (statusMap[status] || status);
 }
 
 function previewWhatsapp() {
-  if ($("messagePreview")) {
-    $("messagePreview").textContent = buildWhatsappMessage();
-  }
+  if ($("messagePreview")) $("messagePreview").textContent = buildWhatsappMessage();
 }
 
 function copyWhatsapp() {
-  const msg = buildWhatsappMessage();
-
-  navigator.clipboard.writeText(msg).then(function() {
+  navigator.clipboard.writeText(buildWhatsappMessage()).then(function() {
     alert("Message copied.");
   });
 }
@@ -533,378 +442,13 @@ function openWhatsapp() {
   window.open("https://wa.me/" + phone + "?text=" + msg, "_blank");
 }
 
-/* =========================
-   AGENT MANAGEMENT
-========================= */
-
-const dummyAgents = [
-  { id: "AG001", name: "Fitri", phone: "60123456789", tag: "@amad", status: "Active" },
-  { id: "AG002", name: "Hidayah", phone: "601162111013", tag: "@~1annzz", status: "Active" },
-  { id: "AG003", name: "Lea", phone: "601162111013", tag: "@+60 11-6211 1013", status: "Active" }
-];
-
-function makeApplyLink(agentId, type) {
-  return CONFIG.FRONTEND_BASE_URL +
-    "/apply.html?agent=" +
-    encodeURIComponent(agentId) +
-    "&type=" +
-    encodeURIComponent(type);
-}
-
-function copyText(text) {
-  navigator.clipboard.writeText(text).then(function() {
-    alert("Copied.");
-  });
-}
-
-function renderAgents(list) {
-  const tbody = $("agentsTableBody");
-
-  if (!tbody) return;
-
-  tbody.innerHTML = "";
-
-  list.forEach(function(a) {
-    const kerajaan = makeApplyLink(a.id, "Kerajaan");
-    const swasta = makeApplyLink(a.id, "Swasta");
-
-    const row =
-      '<tr>' +
-      '<td><strong>' + a.id + '</strong></td>' +
-      '<td>' + a.name + '</td>' +
-      '<td>' + a.phone + '</td>' +
-      '<td>' + (a.tag || "") + '</td>' +
-      '<td>' + a.status + '</td>' +
-      '<td><button class="btn btn-small btn-yellow" onclick="copyText(\'' + kerajaan + '\')">Salin Link</button></td>' +
-      '<td><button class="btn btn-small btn-pink" onclick="copyText(\'' + swasta + '\')">Salin Link</button></td>' +
-      '<td><button class="btn btn-small btn-light">Edit</button></td>' +
-      '</tr>';
-
-    tbody.innerHTML += row;
-  });
-}
-
-function loadAgentsFromSheet() {
-
-  return new Promise(function(resolve, reject) {
-
-    const callbackName = "cb_agents_" + Date.now();
-
-    window[callbackName] = function(data) {
-
-      resolve(data || []);
-
-      delete window[callbackName];
-
-      script.remove();
-
-    };
-
-    const script = document.createElement("script");
-
-    script.src =
-      CONFIG.APPS_SCRIPT_URL +
-      "?action=getAgents&callback=" +
-      callbackName;
-
-    script.onerror = reject;
-
-    document.body.appendChild(script);
-
-  });
-
-}
-
-function addAgentToSheet(agent) {
-
-  return new Promise(function(resolve, reject) {
-
-    const callbackName = "cb_add_agent_" + Date.now();
-
-    window[callbackName] = function(data) {
-
-      resolve(data);
-
-      delete window[callbackName];
-
-      script.remove();
-
-    };
-
-    const script = document.createElement("script");
-
-    script.src =
-      CONFIG.APPS_SCRIPT_URL +
-      "?action=addAgent" +
-      "&agentId=" + encodeURIComponent(agent.id) +
-      "&agentName=" + encodeURIComponent(agent.name) +
-      "&phone=" + encodeURIComponent(agent.phone) +
-      "&status=" + encodeURIComponent(agent.status) +
-      "&callback=" + callbackName;
-
-    script.onerror = reject;
-
-    document.body.appendChild(script);
-
-  });
-
-}
-
-async function renderAgentsReal() {
-
-  const agents = await loadAgentsFromSheet();
-
-  const tbody = $("agentsTableBody");
-
-  if (!tbody) return;
-
-  tbody.innerHTML = "";
-
-  agents.forEach(function(a) {
-
-    tbody.innerHTML += `
-      <tr>
-        <td><strong>${a.AgentID}</strong></td>
-        <td>${a.AgentName}</td>
-        <td>${a.Phone}</td>
-        <td>${a.Status}</td>
-
-        <td>
-          <button class="btn btn-small btn-yellow"
-            onclick="copyText('${a.KerajaanLink}')">
-            Kerajaan
-          </button>
-        </td>
-
-        <td>
-          <button class="btn btn-small btn-pink"
-            onclick="copyText('${a.SwastaLink}')">
-            Swasta
-          </button>
-        </td>
-
-      </tr>
-    `;
-
-  });
-
-}
-
-/* =========================
-   AGENT MANAGEMENT REAL DATABASE
-========================= */
-
-function loadAgentsFromSheet() {
-
-  return new Promise(function(resolve, reject) {
-
-    const callbackName = "cb_agents_" + Date.now();
-
-    window[callbackName] = function(data) {
-
-      resolve(data || []);
-
-      delete window[callbackName];
-
-      script.remove();
-
-    };
-
-    const script = document.createElement("script");
-
-    script.src =
-      CONFIG.APPS_SCRIPT_URL +
-      "?action=getAgents&callback=" +
-      callbackName;
-
-    script.onerror = reject;
-
-    document.body.appendChild(script);
-
-  });
-
-}
-
-function addAgentToSheet(agent) {
-
-  return new Promise(function(resolve, reject) {
-
-    const callbackName = "cb_add_agent_" + Date.now();
-
-    window[callbackName] = function(data) {
-
-      resolve(data);
-
-      delete window[callbackName];
-
-      script.remove();
-
-    };
-
-    const script = document.createElement("script");
-
-    script.src =
-      CONFIG.APPS_SCRIPT_URL +
-      "?action=addAgent" +
-      "&agentId=" + encodeURIComponent(agent.id) +
-      "&agentName=" + encodeURIComponent(agent.name) +
-      "&phone=" + encodeURIComponent(agent.phone) +
-      "&status=" + encodeURIComponent(agent.status) +
-      "&callback=" + callbackName;
-
-    script.onerror = reject;
-
-    document.body.appendChild(script);
-
-  });
-
-}
-
-async function renderAgentsReal() {
-
-  const agents = await loadAgentsFromSheet();
-
-  const tbody = $("agentsTableBody");
-
-  if (!tbody) return;
-
-  tbody.innerHTML = "";
-
-  if (!agents || agents.length === 0) {
-
-    tbody.innerHTML = `
-      <tr>
-        <td colspan="6" style="text-align:center;padding:20px;">
-          Tiada data agent
-        </td>
-      </tr>
-    `;
-
-    return;
-
-  }
-
-  agents.forEach(function(a) {
-
-    tbody.innerHTML += `
-      <tr>
-
-        <td>
-          <strong>${a.AgentID || "-"}</strong>
-        </td>
-
-        <td>${a.AgentName || "-"}</td>
-
-        <td>${a.Phone || "-"}</td>
-
-        <td>${a.Status || "-"}</td>
-
-        <td>
-          <button
-            class="btn btn-small btn-yellow"
-            onclick="copyText('${a.KerajaanLink || "#"}')">
-
-            Kerajaan
-
-          </button>
-        </td>
-
-        <td>
-          <button
-            class="btn btn-small btn-pink"
-            onclick="copyText('${a.SwastaLink || "#"}')">
-
-            Swasta
-
-          </button>
-        </td>
-
-      </tr>
-    `;
-
-  });
-
-}
-
-function initAgentsPage() {
-
-  if (!$("agentsTableBody")) return;
-
-  renderAgentsReal();
-
-  if ($("agentForm")) {
-
-    $("agentForm").addEventListener("submit", async function(e) {
-
-      e.preventDefault();
-
-      const agent = {
-
-        id: $("agentId").value.trim(),
-
-        name: $("agentName").value.trim(),
-
-        phone: $("agentPhone").value.trim(),
-
-        status: $("agentStatus").value
-
-      };
-
-      if (
-        !agent.id ||
-        !agent.name ||
-        !agent.phone
-      ) {
-
-        alert("Sila lengkapkan semua maklumat agent.");
-        return;
-
-      }
-
-      try {
-
-        const result = await addAgentToSheet(agent);
-
-        if (result.success) {
-
-          alert("Agent berjaya ditambah.");
-
-          $("agentForm").reset();
-
-          renderAgentsReal();
-
-        } else {
-
-          alert("Gagal tambah agent.");
-
-        }
-
-      } catch (err) {
-
-        console.error(err);
-
-        alert("Error tambah agent.");
-
-      }
-
-    });
-
-  }
-
-}
-
-    const script = document.createElement("script");
-
-    script.src =
-      CONFIG.APPS_SCRIPT_URL +
-      "?action=updateStatus" +
-      "&orderId=" + encodeURIComponent(orderId) +
-      "&status=" + encodeURIComponent(status) +
-      "&remark=" + encodeURIComponent(remark) +
-      "&callback=" + callbackName;
-
-    script.onerror = reject;
-    document.body.appendChild(script);
+function updateStatusToSheet(orderId, status, remark) {
+  return jsonpRequest(
+    CONFIG.APPS_SCRIPT_URL +
+    "?action=updateStatus" +
+    "&orderId=" + encodeURIComponent(orderId) +
+    "&status=" + encodeURIComponent(status) +
+    "&remark=" + encodeURIComponent(remark)
   );
 }
 
@@ -923,9 +467,98 @@ async function saveStatusUpdate() {
     alert("Gagal update status.");
   }
 }
-/* =========================
-   INIT
-========================= */
+
+/* AGENT MANAGEMENT REAL DATABASE */
+
+function loadAgentsFromSheet() {
+  return jsonpRequest(CONFIG.APPS_SCRIPT_URL + "?action=getAgents");
+}
+
+function addAgentToSheet(agent) {
+  return jsonpRequest(
+    CONFIG.APPS_SCRIPT_URL +
+    "?action=addAgent" +
+    "&agentId=" + encodeURIComponent(agent.id) +
+    "&agentName=" + encodeURIComponent(agent.name) +
+    "&phone=" + encodeURIComponent(agent.phone) +
+    "&status=" + encodeURIComponent(agent.status)
+  );
+}
+
+async function renderAgentsReal() {
+  const agents = await loadAgentsFromSheet();
+  const tbody = $("agentsTableBody");
+
+  if (!tbody) return;
+
+  tbody.innerHTML = "";
+
+  if (!agents || agents.length === 0) {
+    tbody.innerHTML =
+      '<tr><td colspan="6" style="text-align:center;padding:20px;">Tiada data agent</td></tr>';
+    return;
+  }
+
+  agents.forEach(function(a) {
+    tbody.innerHTML +=
+      '<tr>' +
+      '<td><strong>' + (a.AgentID || "-") + '</strong></td>' +
+      '<td>' + (a.AgentName || "-") + '</td>' +
+      '<td>' + (a.Phone || "-") + '</td>' +
+      '<td>' + (a.Status || "-") + '</td>' +
+      '<td><button class="btn btn-small btn-yellow" onclick="copyText(\'' + (a.KerajaanLink || "#") + '\')">Kerajaan</button></td>' +
+      '<td><button class="btn btn-small btn-pink" onclick="copyText(\'' + (a.SwastaLink || "#") + '\')">Swasta</button></td>' +
+      '</tr>';
+  });
+}
+
+function initAgentsPage() {
+  if (!$("agentsTableBody")) return;
+
+  renderAgentsReal();
+
+  if ($("agentForm")) {
+    $("agentForm").addEventListener("submit", async function(e) {
+      e.preventDefault();
+
+      const agent = {
+        id: $("agentId").value.trim(),
+        name: $("agentName").value.trim(),
+        phone: $("agentPhone").value.trim(),
+        status: $("agentStatus").value
+      };
+
+      if (!agent.id || !agent.name || !agent.phone) {
+        alert("Sila lengkapkan semua maklumat agent.");
+        return;
+      }
+
+      try {
+        const result = await addAgentToSheet(agent);
+
+        if (result.success) {
+          alert("Agent berjaya ditambah.");
+          $("agentForm").reset();
+          renderAgentsReal();
+        } else {
+          alert("Gagal tambah agent.");
+        }
+
+      } catch (err) {
+        console.error(err);
+        alert("Error tambah agent.");
+      }
+    });
+  }
+}
+
+function copyText(text) {
+  navigator.clipboard.writeText(text).then(function() {
+    alert("Copied.");
+  });
+}
+
+/* INIT */
 
 document.addEventListener("DOMContentLoaded", function() {
   initApplyPage();
