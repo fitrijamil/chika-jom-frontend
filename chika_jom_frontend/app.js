@@ -1,5 +1,5 @@
 const CONFIG = {
-  APPS_SCRIPT_URL: "https://script.google.com/macros/s/AKfycbxqbjeo0ot7fZbGHKkGWaczlr-YNQ5hMxI6aIMgdaVG0lCI_muOUXoq3-av3ndC__Sb/exec",
+  APPS_SCRIPT_URL: "https://script.google.com/macros/s/AKfycbxTfAYSO7fSCZcdL9HZ-oCokRffDYxIh_taED_lzbNVCpZ10aOlFJOXyZqcaDbFnCQP/exec",
   FRONTEND_BASE_URL: "https://chika-jom-frontend.pages.dev"
 };
 
