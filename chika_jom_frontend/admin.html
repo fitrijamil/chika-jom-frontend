@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ms">
+<html lang="ms"><div class="admin-layout">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,6 +10,15 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+<script>
+const password = prompt("Enter Admin Password");
+
+if(password !== "ChikaAdmin2026"){
+  alert("Access Denied");
+  window.location.href = "index.html";
+}
+</script>
+  
   <div class="admin-layout">
     <aside class="sidebar">
       <img class="logo" src="https://lh3.googleusercontent.com/d/1hftGSs3xj2bwCRFUTE6UmQMhX3uIrYqe" alt="Logo">
