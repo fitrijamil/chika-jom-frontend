@@ -690,6 +690,142 @@ async function renderAgentsReal() {
 
 }
 
+/* =========================
+   AGENT MANAGEMENT REAL DATABASE
+========================= */
+
+function loadAgentsFromSheet() {
+
+  return new Promise(function(resolve, reject) {
+
+    const callbackName = "cb_agents_" + Date.now();
+
+    window[callbackName] = function(data) {
+
+      resolve(data || []);
+
+      delete window[callbackName];
+
+      script.remove();
+
+    };
+
+    const script = document.createElement("script");
+
+    script.src =
+      CONFIG.APPS_SCRIPT_URL +
+      "?action=getAgents&callback=" +
+      callbackName;
+
+    script.onerror = reject;
+
+    document.body.appendChild(script);
+
+  });
+
+}
+
+function addAgentToSheet(agent) {
+
+  return new Promise(function(resolve, reject) {
+
+    const callbackName = "cb_add_agent_" + Date.now();
+
+    window[callbackName] = function(data) {
+
+      resolve(data);
+
+      delete window[callbackName];
+
+      script.remove();
+
+    };
+
+    const script = document.createElement("script");
+
+    script.src =
+      CONFIG.APPS_SCRIPT_URL +
+      "?action=addAgent" +
+      "&agentId=" + encodeURIComponent(agent.id) +
+      "&agentName=" + encodeURIComponent(agent.name) +
+      "&phone=" + encodeURIComponent(agent.phone) +
+      "&status=" + encodeURIComponent(agent.status) +
+      "&callback=" + callbackName;
+
+    script.onerror = reject;
+
+    document.body.appendChild(script);
+
+  });
+
+}
+
+async function renderAgentsReal() {
+
+  const agents = await loadAgentsFromSheet();
+
+  const tbody = $("agentsTableBody");
+
+  if (!tbody) return;
+
+  tbody.innerHTML = "";
+
+  if (!agents || agents.length === 0) {
+
+    tbody.innerHTML = `
+      <tr>
+        <td colspan="6" style="text-align:center;padding:20px;">
+          Tiada data agent
+        </td>
+      </tr>
+    `;
+
+    return;
+
+  }
+
+  agents.forEach(function(a) {
+
+    tbody.innerHTML += `
+      <tr>
+
+        <td>
+          <strong>${a.AgentID || "-"}</strong>
+        </td>
+
+        <td>${a.AgentName || "-"}</td>
+
+        <td>${a.Phone || "-"}</td>
+
+        <td>${a.Status || "-"}</td>
+
+        <td>
+          <button
+            class="btn btn-small btn-yellow"
+            onclick="copyText('${a.KerajaanLink || "#"}')">
+
+            Kerajaan
+
+          </button>
+        </td>
+
+        <td>
+          <button
+            class="btn btn-small btn-pink"
+            onclick="copyText('${a.SwastaLink || "#"}')">
+
+            Swasta
+
+          </button>
+        </td>
+
+      </tr>
+    `;
+
+  });
+
+}
+
 function initAgentsPage() {
 
   if (!$("agentsTableBody")) return;
@@ -714,19 +850,40 @@ function initAgentsPage() {
 
       };
 
-      const result = await addAgentToSheet(agent);
+      if (
+        !agent.id ||
+        !agent.name ||
+        !agent.phone
+      ) {
 
-      if (result.success) {
+        alert("Sila lengkapkan semua maklumat agent.");
+        return;
 
-        alert("Agent berjaya ditambah.");
+      }
 
-        $("agentForm").reset();
+      try {
 
-        renderAgentsReal();
+        const result = await addAgentToSheet(agent);
 
-      } else {
+        if (result.success) {
 
-        alert("Gagal tambah agent.");
+          alert("Agent berjaya ditambah.");
+
+          $("agentForm").reset();
+
+          renderAgentsReal();
+
+        } else {
+
+          alert("Gagal tambah agent.");
+
+        }
+
+      } catch (err) {
+
+        console.error(err);
+
+        alert("Error tambah agent.");
 
       }
 
