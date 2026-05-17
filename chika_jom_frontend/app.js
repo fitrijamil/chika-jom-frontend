@@ -317,26 +317,61 @@ const filtered = source.filter(app=>{
   renderApplications(filtered);
 }
 
-function renderApplications(list){
+function renderApplications(applications){
+
   const tbody = $("applicationTableBody");
-  tbody.innerHTML = list.map(app=>`
-    <tr>
-      <td>${app.orderId}</td>
-      <td><strong>${app.name}</strong></td>
-      <td>${app.ic}</td>
-      <td>${app.phone}</td>
-      <td>${app.agent}</td>
-      <td>${app.type}</td>
-      <td>${statusBadge(app.status)}</td>
-      <td><button class="btn btn-small btn-yellow" onclick="window.open('${app.folder}','_blank')">📁</button></td>
+
+  if(!tbody) return;
+
+  tbody.innerHTML = "";
+
+  if(!applications || applications.length === 0){
+
+    tbody.innerHTML = `
+      <tr>
+        <td colspan="9" style="text-align:center;padding:30px;">
+          Tiada data permohonan
+        </td>
+      </tr>
+    `;
+
+    return;
+  }
+
+  applications.reverse().forEach(app=>{
+
+    const tr = document.createElement("tr");
+
+    tr.innerHTML = `
+      <td>${app.orderId || '-'}</td>
+      <td>${app.name || '-'}</td>
+      <td>${app.ic || '-'}</td>
+      <td>${app.phone || '-'}</td>
+      <td>${app.agent || '-'}</td>
+      <td>${app.type || '-'}</td>
       <td>
-        <div class="action-row">
-          <button class="btn btn-small btn-light" onclick='openStatusModal(${JSON.stringify(app)})'>Update</button>
-          <button class="btn btn-small btn-black" onclick='openWhatsappModal(${JSON.stringify(app)})'>WhatsApp</button>
-        </div>
+        <span class="status-badge">
+          ${app.status || 'New Submission'}
+        </span>
       </td>
-    </tr>
-  `).join("");
+      <td>
+        ${
+          app.folder
+          ? `<a href="${app.folder}" target="_blank">📁 Folder</a>`
+          : '-'
+        }
+      </td>
+      <td>
+        <button onclick="openWhatsAppModal('${app.orderId}')">
+          WhatsApp
+        </button>
+      </td>
+    `;
+
+    tbody.appendChild(tr);
+
+  });
+
 }
 
 function openStatusModal(app){
