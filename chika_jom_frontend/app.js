@@ -251,20 +251,51 @@ alert("Permohonan berjaya dihantar. Admin akan membuat semakan.");
   }
 }
 
+function loadApplicationsFromSheet() {
+  return new Promise((resolve, reject) => {
+    const callbackName = "handleApplications_" + Date.now();
+
+    window[callbackName] = function(data) {
+      resolve(data);
+      delete window[callbackName];
+      script.remove();
+    };
+
+    const script = document.createElement("script");
+    script.src = CONFIG.APPS_SCRIPT_URL + "?action=getApplications&callback=" + callbackName;
+    script.onerror = reject;
+    document.body.appendChild(script);
+  });
+}
 function initAdminPage(){
+ async function initAdminPage(){
   if(!$("applicationTableBody")) return;
-  renderApplications(dummyApplications);
+
+  try {
+    const sheetData = await loadApplicationsFromSheet();
+
+    const applications = sheetData.map(row => ({
+      orderId: row.OrderID || "",
+      name: row.CustomerName || "",
+      ic: row.IC || "",
+      phone: row.Phone || "",
+      agent: row.AgentName || "",
+      agentPhone: "",
+      agentId: row.AgentID || "",
+      type: row.Type || "",
+      status: row.Status || "New Submission",
+      folder: row.FolderLink || "#"
+    }));
+
+    window.liveApplications = applications;
+    renderApplications(applications);
+  } catch (err) {
+    console.error(err);
+    renderApplications(dummyApplications);
+  }
 
   ["searchInput","statusFilter","typeFilter","agentFilter"].forEach(id=>{
     if($(id)) $(id).addEventListener("input", filterApplications);
-  });
-
-  const agentFilter = $("agentFilter");
-  dummyAgents.forEach(a=>{
-    const option = document.createElement("option");
-    option.value = a.id;
-    option.textContent = `${a.id} - ${a.name}`;
-    agentFilter.appendChild(option);
   });
 }
 
@@ -274,7 +305,8 @@ function filterApplications(){
   const type = $("typeFilter").value;
   const agent = $("agentFilter").value;
 
-  const filtered = dummyApplications.filter(app=>{
+ const source = window.liveApplications || dummyApplications;
+const filtered = source.filter(app=>{
     const text = `${app.orderId} ${app.name} ${app.ic} ${app.phone}`.toLowerCase();
     return (!q || text.includes(q)) &&
       (!status || app.status === status) &&
