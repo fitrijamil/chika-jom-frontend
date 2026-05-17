@@ -14,22 +14,22 @@ function getParam(name){
   return new URLSearchParams(window.location.search).get(name);
 }
 
-function statusBadge(status){
-
+function statusBadge(status) {
   const map = {
-    "New Submission":"status-new",
-    "In Review":"status-review",
-    "Pending Checking":"status-pending",
-    "Pending Document":"status-pending",
-    "Approved":"status-approved",
-    "Layak":"status-approved",
-    "Rejected":"status-rejected",
-    "Tak Layak":"status-rejected"
+    "New Submission": "status-new",
+    "In Review": "status-review",
+    "Pending Checking": "status-pending",
+    "Pending Document": "status-pending",
+    "Approved": "status-approved",
+    "Layak": "status-approved",
+    "Rejected": "status-rejected",
+    "Tak Layak": "status-rejected"
   };
 
-  return `<span class="badge ${map[status] || "status-new"}">${status}</span>`;
-}
+  const cssClass = map[status] || "status-new";
 
+  return '<span class="badge ' + cssClass + '">' + status + '</span>';
+}
 function fileToBase64(file){
 
   return new Promise((resolve,reject)=>{
