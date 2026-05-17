@@ -4,17 +4,16 @@ const CONFIG = {
   FRONTEND_BASE_URL: "https://chika-jom-frontend.pages.dev"
 };
 
-const LOGO_URL = "https://lh3.googleusercontent.com/d/1hftGSs3xj2bwCRFUTE6UmQMhX3uIrYqe";
-
-function $(id){
+function $(id) {
   return document.getElementById(id);
 }
 
-function getParam(name){
+function getParam(name) {
   return new URLSearchParams(window.location.search).get(name);
 }
 
 function statusBadge(status) {
+
   const map = {
     "New Submission": "status-new",
     "In Review": "status-review",
@@ -30,13 +29,16 @@ function statusBadge(status) {
 
   return '<span class="badge ' + cssClass + '">' + status + '</span>';
 }
-function fileToBase64(file){
 
-  return new Promise((resolve,reject)=>{
+function fileToBase64(file) {
+
+  return new Promise(function(resolve, reject) {
 
     const reader = new FileReader();
 
-    reader.onload = () => resolve(reader.result);
+    reader.onload = function() {
+      resolve(reader.result);
+    };
 
     reader.onerror = reject;
 
@@ -46,64 +48,68 @@ function fileToBase64(file){
 
 }
 
-async function collectFile(inputId, label, files){
+async function collectFile(inputId, label, files) {
 
   const input = $(inputId);
 
-  if(!input || !input.files || !input.files[0]) return;
+  if (!input || !input.files || !input.files[0]) return;
 
   const file = input.files[0];
 
-  if(file.size > 5 * 1024 * 1024){
-    throw new Error(`${label} melebihi 5MB.`);
+  if (file.size > 5 * 1024 * 1024) {
+    throw new Error(label + " melebihi 5MB.");
   }
 
   const base64 = await fileToBase64(file);
 
   files.push({
-    name: `${label} - ${file.name}`,
+    name: label + " - " + file.name,
     mimeType: file.type,
     data: base64.split(",")[1]
   });
 
 }
 
-function toggleInput(inputId, enabled, placeholder){
+function toggleInput(inputId, enabled, placeholder) {
 
   const el = $(inputId);
 
-  if(!el) return;
+  if (!el) return;
 
-  if(enabled){
+  if (enabled) {
 
     el.disabled = false;
     el.removeAttribute("disabled");
     el.placeholder = placeholder || "";
 
-  }else{
+  } else {
 
     el.value = "";
     el.disabled = true;
-    el.setAttribute("disabled","disabled");
+    el.setAttribute("disabled", "disabled");
     el.placeholder = "Tidak perlu isi";
 
   }
 
 }
 
-function toggleApplicationType(){
+function toggleApplicationType() {
 
   const type = $("applicationType").value;
 
-  $("kerajaanSection").style.display =
-    type === "Kerajaan" ? "block" : "none";
+  if ($("kerajaanSection")) {
+    $("kerajaanSection").style.display =
+      type === "Kerajaan" ? "block" : "none";
+  }
 
-  $("swastaSection").style.display =
-    type === "Swasta" ? "block" : "none";
+  if ($("swastaSection")) {
+    $("swastaSection").style.display =
+      type === "Swasta" ? "block" : "none";
+  }
 
 }
 
-function toggleSpouseSalary(){
+function toggleSpouseSalary() {
 
   toggleInput(
     "spouseNetSalary",
@@ -113,7 +119,7 @@ function toggleSpouseSalary(){
 
 }
 
-function toggleProfessionalCert(){
+function toggleProfessionalCert() {
 
   toggleInput(
     "professionalCertName",
@@ -123,7 +129,7 @@ function toggleProfessionalCert(){
 
 }
 
-function toggleAkpk(){
+function toggleAkpk() {
 
   toggleInput(
     "akpkPeriod",
@@ -133,34 +139,54 @@ function toggleAkpk(){
 
 }
 
-function toggleCtos(){
+function toggleCtos() {
 
-  $("ctosConsentBox").style.display =
-    $("ctosOption").value === "Chika Bantu Semakan"
-      ? "block"
-      : "none";
+  if ($("ctosConsentBox")) {
+
+    $("ctosConsentBox").style.display =
+      $("ctosOption").value === "Chika Bantu Semakan"
+        ? "block"
+        : "none";
+
+  }
 
 }
 
-function initApplyPage(){
+function initApplyPage() {
 
-  if(!$("applyForm")) return;
+  if (!$("applyForm")) return;
 
   const agent = getParam("agent") || "AG001";
   const type = getParam("type") || "";
 
-  $("agentDisplay").value =
-    `${agent} - Chika Jom Consult`;
+  if ($("agentDisplay")) {
+    $("agentDisplay").value =
+      agent + " - Chika Jom Consult";
+  }
 
-  if(type){
+  if (type && $("applicationType")) {
     $("applicationType").value = type;
   }
 
-  $("applicationType").addEventListener("change", toggleApplicationType);
-  $("spouseWorking").addEventListener("change", toggleSpouseSalary);
-  $("professionalCert").addEventListener("change", toggleProfessionalCert);
-  $("akpk").addEventListener("change", toggleAkpk);
-  $("ctosOption").addEventListener("change", toggleCtos);
+  if ($("applicationType")) {
+    $("applicationType").addEventListener("change", toggleApplicationType);
+  }
+
+  if ($("spouseWorking")) {
+    $("spouseWorking").addEventListener("change", toggleSpouseSalary);
+  }
+
+  if ($("professionalCert")) {
+    $("professionalCert").addEventListener("change", toggleProfessionalCert);
+  }
+
+  if ($("akpk")) {
+    $("akpk").addEventListener("change", toggleAkpk);
+  }
+
+  if ($("ctosOption")) {
+    $("ctosOption").addEventListener("change", toggleCtos);
+  }
 
   toggleApplicationType();
   toggleSpouseSalary();
@@ -172,7 +198,7 @@ function initApplyPage(){
 
 }
 
-async function handleApplySubmit(e){
+async function handleApplySubmit(e) {
 
   e.preventDefault();
 
@@ -181,7 +207,7 @@ async function handleApplySubmit(e){
   submitBtn.disabled = true;
   submitBtn.innerHTML = "UPLOADING... PLEASE WAIT";
 
-  try{
+  try {
 
     const files = [];
 
@@ -245,7 +271,7 @@ async function handleApplySubmit(e){
           ? "YES"
           : "NO",
 
-      files
+      files: files
 
     };
 
@@ -267,30 +293,30 @@ async function handleApplySubmit(e){
 
     $("applyForm").reset();
 
-  }catch(err){
+  } catch (err) {
 
     console.error(err);
 
     alert("Ralat semasa submit.");
 
-  }finally{
+  } finally {
 
     submitBtn.disabled = false;
 
     submitBtn.innerHTML =
-      `<span class="arrow">➜</span> SUBMIT APPLICATION`;
+      '<span class="arrow">➜</span> SUBMIT APPLICATION';
 
   }
 
 }
 
-function loadApplicationsFromSheet(){
+function loadApplicationsFromSheet() {
 
-  return new Promise((resolve,reject)=>{
+  return new Promise(function(resolve, reject) {
 
     const callbackName = "cb_apps_" + Date.now();
 
-    window[callbackName] = function(data){
+    window[callbackName] = function(data) {
 
       resolve(data || []);
 
@@ -315,41 +341,45 @@ function loadApplicationsFromSheet(){
 
 }
 
-async function initAdminPage(){
+async function initAdminPage() {
 
-  if(!$("applicationTableBody")) return;
+  if (!$("applicationTableBody")) return;
 
-  try{
+  try {
 
     const sheetData = await loadApplicationsFromSheet();
 
-    window.liveApplications = sheetData.map(row => ({
+    window.liveApplications = sheetData.map(function(row) {
 
-      orderId: row.OrderID || "",
+      return {
 
-      name: row.CustomerName || "",
+        orderId: row.OrderID || "",
 
-      ic: row.IC || "",
+        name: row.CustomerName || "",
 
-      phone: row.Phone || "",
+        ic: row.IC || "",
 
-      agent: row.AgentName || "",
+        phone: row.Phone || "",
 
-      agentPhone: "",
+        agent: row.AgentName || "",
 
-      agentId: row.AgentID || "",
+        agentPhone: "",
 
-      type: row.Type || "",
+        agentId: row.AgentID || "",
 
-      status: row.Status || "New Submission",
+        type: row.Type || "",
 
-      folder: row.FolderLink || "#"
+        status: row.Status || "New Submission",
 
-    }));
+        folder: row.FolderLink || "#"
+
+      };
+
+    });
 
     renderApplications(window.liveApplications);
 
-  }catch(err){
+  } catch (err) {
 
     console.error(err);
 
@@ -357,10 +387,10 @@ async function initAdminPage(){
 
   }
 
-  ["searchInput","statusFilter","typeFilter","agentFilter"]
-    .forEach(id => {
+  ["searchInput", "statusFilter", "typeFilter", "agentFilter"]
+    .forEach(function(id) {
 
-      if($(id)){
+      if ($(id)) {
         $(id).addEventListener("input", filterApplications);
       }
 
@@ -368,27 +398,39 @@ async function initAdminPage(){
 
 }
 
-function filterApplications(){
+function filterApplications() {
 
   const source = window.liveApplications || [];
 
   const q =
-    $("searchInput")?.value.toLowerCase() || "";
+    $("searchInput") ?
+    $("searchInput").value.toLowerCase() :
+    "";
 
   const status =
-    $("statusFilter")?.value || "";
+    $("statusFilter") ?
+    $("statusFilter").value :
+    "";
 
   const type =
-    $("typeFilter")?.value || "";
+    $("typeFilter") ?
+    $("typeFilter").value :
+    "";
 
   const agent =
-    $("agentFilter")?.value || "";
+    $("agentFilter") ?
+    $("agentFilter").value :
+    "";
 
-  const filtered = source.filter(app => {
+  const filtered = source.filter(function(app) {
 
     const text =
-      `${app.orderId} ${app.name} ${app.ic} ${app.phone}`
-      .toLowerCase();
+      (
+        app.orderId + " " +
+        app.name + " " +
+        app.ic + " " +
+        app.phone
+      ).toLowerCase();
 
     return (!q || text.includes(q)) &&
       (!status || app.status === status) &&
@@ -401,84 +443,83 @@ function filterApplications(){
 
 }
 
-function renderApplications(applications){
+function renderApplications(applications) {
 
   const tbody = $("applicationTableBody");
 
-  if(!tbody) return;
+  if (!tbody) return;
 
   tbody.innerHTML = "";
 
-  if(!applications || applications.length === 0){
+  if (!applications || applications.length === 0) {
 
-    tbody.innerHTML = `
-      <tr>
-        <td colspan="9" style="text-align:center;padding:30px;">
-          Tiada data permohonan
-        </td>
-      </tr>
-    `;
+    tbody.innerHTML =
+      '<tr>' +
+      '<td colspan="9" style="text-align:center;padding:30px;">' +
+      'Tiada data permohonan' +
+      '</td>' +
+      '</tr>';
 
     return;
 
   }
 
-  [...applications].reverse().forEach(app => {
+  applications.reverse().forEach(function(app) {
 
-    tbody.innerHTML += `
-      <tr>
-        <td>${app.orderId || "-"}</td>
-        <td><strong>${app.name || "-"}</strong></td>
-        <td>${app.ic || "-"}</td>
-        <td>${app.phone || "-"}</td>
-        <td>${app.agent || "-"}</td>
-        <td>${app.type || "-"}</td>
-        <td>${statusBadge(app.status || "New Submission")}</td>
-        <td>
-          ${
-            app.folder && app.folder !== "#"
-            ? `<a href="${app.folder}" target="_blank">📁 Folder</a>`
-            : "-"
-          }
-        </td>
-        <td>
-          <button class="btn btn-small btn-black"
-            onclick='openStatusModal(${JSON.stringify(app)})'>
-            Update
-          </button>
-        </td>
-      </tr>
-    `;
+    const row =
+      '<tr>' +
+
+      '<td>' + (app.orderId || "-") + '</td>' +
+
+      '<td><strong>' +
+      (app.name || "-") +
+      '</strong></td>' +
+
+      '<td>' + (app.ic || "-") + '</td>' +
+
+      '<td>' + (app.phone || "-") + '</td>' +
+
+      '<td>' + (app.agent || "-") + '</td>' +
+
+      '<td>' + (app.type || "-") + '</td>' +
+
+      '<td>' +
+      statusBadge(app.status || "New Submission") +
+      '</td>' +
+
+      '<td>' +
+
+      (
+        app.folder && app.folder !== "#"
+          ? '<a href="' + app.folder + '" target="_blank">📁 Folder</a>'
+          : "-"
+      ) +
+
+      '</td>' +
+
+      '<td>' +
+
+      '<button class="btn btn-small btn-black">' +
+      'Update' +
+      '</button>' +
+
+      '</td>' +
+
+      '</tr>';
+
+    tbody.innerHTML += row;
 
   });
 
 }
 
-function openStatusModal(app){
+function initAgentsPage() {
 
-  $("selectedCustomerName").textContent = app.name;
-
-  $("modalOrderId").value = app.orderId;
-
-  $("modalAgentName").value = app.agent;
-
-  $("statusModal").classList.add("show");
+  if (!$("agentsTableBody")) return;
 
 }
 
-function closeStatusModal(){
-
-  $("statusModal").classList.remove("show");
-
-}
-
-function initAgentsPage(){
-
-  if(!$("agentsTableBody")) return;
-
-}
-
-document.addEventListener("DOMContentLoaded", ()=>{
+document.addEventListener("DOMContentLoaded", function() {
 
   initApplyPage();
 
