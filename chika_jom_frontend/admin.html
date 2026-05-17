@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard - Chika Jom Consult</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="admin-layout">
+    <aside class="sidebar">
+      <img class="logo" src="https://lh3.googleusercontent.com/d/1hftGSs3xj2bwCRFUTE6UmQMhX3uIrYqe" alt="Logo">
+      <nav class="side-menu">
+        <a class="active" href="admin.html">▣ Dashboard</a>
+        <a href="#applications">▤ Permohonan</a>
+        <a href="agent-management.html">♙ Ejen</a>
+        <a href="#documents">▧ Dokumen</a>
+        <a href="#settings">⚙ Tetapan</a>
+        <a href="index.html">↩ Log Keluar</a>
+      </nav>
+    </aside>
+
+    <main class="admin-main">
+      <header class="admin-top">
+        <h1>Dashboard</h1>
+        <div class="admin-user"><span>🔔</span><div class="avatar"></div><div><b>Admin</b><br><small>Superadmin</small></div></div>
+      </header>
+
+      <section class="metric-grid">
+        <div class="card metric"><small>Jumlah Permohonan</small><b>248</b><small style="color:var(--green)">+12% dari bulan lepas</small></div>
+        <div class="card metric"><small>New Submission</small><b>32</b><small>Menunggu semakan</small></div>
+        <div class="card metric"><small>In Review</small><b>45</b><small>Sedang diproses</small></div>
+        <div class="card metric"><small>Approved</small><b>128</b><small>Diluluskan</small></div>
+        <div class="card metric"><small>Rejected</small><b>43</b><small>Ditolak</small></div>
+      </section>
+
+      <section class="card" id="applications" style="padding:22px">
+        <div class="toolbar">
+          <input id="searchInput" placeholder="Cari nama, IC, telefon...">
+          <select id="statusFilter">
+            <option value="">Semua Status</option>
+            <option>New Submission</option>
+            <option>In Review</option>
+            <option>Pending Document</option>
+            <option>Approved</option>
+            <option>Rejected</option>
+          </select>
+          <select id="typeFilter">
+            <option value="">Semua Jenis</option>
+            <option>Kerajaan</option>
+            <option>Swasta</option>
+          </select>
+          <select id="agentFilter">
+            <option value="">Semua Ejen</option>
+          </select>
+          <button class="btn btn-light">⟳ Muat Semula</button>
+        </div>
+
+        <div class="table-card">
+          <table>
+            <thead>
+              <tr>
+                <th>ID Permohonan</th>
+                <th>Nama</th>
+                <th>IC</th>
+                <th>Telefon</th>
+                <th>Ejen</th>
+                <th>Jenis</th>
+                <th>Status</th>
+                <th>Folder</th>
+                <th>Tindakan</th>
+              </tr>
+            </thead>
+            <tbody id="applicationTableBody"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="dashboard-bottom">
+        <div class="card" style="padding:22px">
+          <h3>Ringkasan Hari Ini</h3>
+          <p>🏦 New Submission <b style="float:right">12</b></p>
+          <p>🔎 In Review <b style="float:right">18</b></p>
+          <p>🟣 Pending Document <b style="float:right">7</b></p>
+          <p>✅ Approved <b style="float:right">9</b></p>
+          <p>❌ Rejected <b style="float:right">3</b></p>
+        </div>
+        <div class="card" style="padding:22px">
+          <h3>Carta Permohonan</h3>
+          <svg width="100%" height="190" viewBox="0 0 540 190" preserveAspectRatio="none">
+            <polyline points="0,150 80,120 160,105 240,55 320,100 400,62 540,30" fill="none" stroke="#ffd21f" stroke-width="5"/>
+            <polygon points="0,150 80,120 160,105 240,55 320,100 400,62 540,30 540,190 0,190" fill="rgba(255,210,31,.2)"/>
+          </svg>
+        </div>
+      </section>
+
+      <section class="quick-actions">
+        <div class="card quick-card"><div class="icon-circle">📁</div><h3>Buka Folder Dokumen</h3><p>Lihat semua dokumen permohonan.</p><button class="btn btn-light">Buka Folder</button></div>
+        <div class="card quick-card"><div class="icon-circle">📝</div><h3>Kemas Kini Status</h3><p>Kemaskini status permohonan.</p><button class="btn btn-light">Kemas Kini</button></div>
+        <div class="card quick-card"><div class="icon-circle">🟢</div><h3>WhatsApp Agent</h3><p>Hantar mesej kepada ejen.</p><button class="btn btn-light">WhatsApp</button></div>
+      </section>
+    </main>
+  </div>
+
+  <div id="statusModal" class="modal">
+    <div class="modal-box">
+      <div class="modal-head">
+        <div>
+          <h2>Kemaskini Status</h2>
+          <p style="margin:0;color:#666" id="selectedCustomerName"></p>
+        </div>
+        <button class="close" onclick="closeStatusModal()">×</button>
+      </div>
+
+      <input id="modalOrderId" type="hidden">
+      <input id="modalAgentName" type="hidden">
+      <input id="modalAgentPhone" type="hidden">
+
+      <div class="grid-2">
+        <div class="field">
+          <label>Status</label>
+          <div class="input-wrap"><span class="input-icon yellow">📌</span>
+            <select id="statusSelect" onchange="previewWhatsapp()">
+              <option>New Submission</option>
+              <option>In Review</option>
+              <option>Layak</option>
+              <option>Tak Layak</option>
+              <option>Pending Checking</option>
+              <option>Pending Document</option>
+              <option>Approved</option>
+              <option>Rejected</option>
+            </select>
+          </div>
+        </div>
+        <div class="field">
+          <label>Remark</label>
+          <div class="input-wrap"><span class="input-icon">💬</span><input id="remarkText" oninput="previewWhatsapp()" placeholder="Contoh: DSR burst"></div>
+        </div>
+      </div>
+
+      <div class="section-title">Butiran Layak</div>
+      <div class="grid-2">
+        <div class="field"><label>Loan Amount</label><div class="input-wrap"><span class="input-icon">💰</span><input id="loanAmount" oninput="previewWhatsapp()"></div></div>
+        <div class="field"><label>Monthly Payment</label><div class="input-wrap"><span class="input-icon">📆</span><input id="monthlyPayment" oninput="previewWhatsapp()"></div></div>
+        <div class="field"><label>Tenure</label><div class="input-wrap"><span class="input-icon">⏳</span><input id="tenure" oninput="previewWhatsapp()" placeholder="10 tahun"></div></div>
+        <div class="field"><label>Deduction</label><div class="input-wrap"><span class="input-icon">➖</span><input id="deduction" oninput="previewWhatsapp()"></div></div>
+        <div class="field"><label>Cash In Hand</label><div class="input-wrap"><span class="input-icon">🤲</span><input id="cashInHand" oninput="previewWhatsapp()"></div></div>
+        <div class="field"><label>Agency Fee</label><div class="input-wrap"><span class="input-icon">🏷️</span><input id="agencyFee" oninput="previewWhatsapp()"></div></div>
+        <div class="field"><label>SST</label><div class="input-wrap"><span class="input-icon">🧾</span><input id="sst" oninput="previewWhatsapp()"></div></div>
+        <div class="field"><label>Net Cash In Hand</label><div class="input-wrap"><span class="input-icon">✅</span><input id="netCash" oninput="previewWhatsapp()"></div></div>
+      </div>
+
+      <div class="section-title">WhatsApp Preview</div>
+      <pre id="messagePreview" class="message-box"></pre>
+
+      <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:16px">
+        <button class="btn btn-yellow" onclick="previewWhatsapp()">Generate Message</button>
+        <button class="btn btn-light" onclick="copyWhatsapp()">Copy Message</button>
+        <button class="btn btn-black" onclick="openWhatsapp()">Open WhatsApp Agent</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Permohonan Pinjaman - Chika Jom Consult</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="apply-page">
+    <div class="corner-yellow"></div>
+    <div class="corner-pink"></div>
+
+    <div class="apply-shell">
+      <div class="apply-top">
+        <img class="logo" src="https://lh3.googleusercontent.com/d/1hftGSs3xj2bwCRFUTE6UmQMhX3uIrYqe" alt="Chika Jom Consult">
+        <h1>Permohonan Pinjaman</h1>
+        <p>Sila isi maklumat dengan lengkap dan tepat.</p>
+      </div>
+
+      <div class="progress">
+        <div class="progress-step active"><b>1</b>Maklumat</div>
+        <div class="progress-step"><b>2</b>Pekerjaan</div>
+        <div class="progress-step"><b>3</b>CTOS</div>
+        <div class="progress-step"><b>4</b>Dokumen</div>
+        <div class="progress-step"><b>5</b>Semakan</div>
+      </div>
+
+      <form id="applyForm" class="card form-card">
+        <section class="form-section">
+          <h2>Maklumat Pelanggan</h2>
+          <div class="grid-2">
+            <div class="field">
+              <label>Nama Penuh</label>
+              <div class="input-wrap"><span class="input-icon">👤</span><input id="customerName" placeholder="Masukkan nama penuh"></div>
+            </div>
+            <div class="field">
+              <label>No. Kad Pengenalan</label>
+              <div class="input-wrap"><span class="input-icon">🪪</span><input id="ic" placeholder="Contoh: 900101-01-1234"></div>
+            </div>
+            <div class="field">
+              <label>No. Telefon</label>
+              <div class="input-wrap"><span class="input-icon">☎️</span><input id="phone" placeholder="Contoh: 012-345 6789"></div>
+            </div>
+            <div class="field">
+              <label>Emel</label>
+              <div class="input-wrap"><span class="input-icon">✉️</span><input id="email" placeholder="Contoh: nama@email.com"></div>
+            </div>
+          </div>
+
+          <div class="section-title">Jenis Permohonan</div>
+          <div class="grid-2">
+            <div class="field">
+              <label>Application Type</label>
+              <div class="input-wrap">
+                <span class="input-icon yellow">🏦</span>
+                <select id="applicationType">
+                  <option value="">Sila pilih</option>
+                  <option value="Kerajaan">Kerajaan</option>
+                  <option value="Swasta">Swasta</option>
+                </select>
+              </div>
+            </div>
+            <div class="field">
+              <label>Agen Penghantar</label>
+              <div class="input-wrap"><span class="input-icon">🔒</span><input id="agentDisplay" disabled></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="form-section">
+          <h2>Maklumat Pekerjaan</h2>
+          <div class="grid-2">
+            <div class="field"><label>Nama Majikan</label><div class="input-wrap"><span class="input-icon">🏢</span><input id="employerName"></div></div>
+            <div class="field"><label>Alamat Majikan</label><div class="input-wrap"><span class="input-icon">📍</span><input id="employerAddress"></div></div>
+            <div class="field"><label>Jawatan</label><div class="input-wrap"><span class="input-icon">💼</span><input id="position"></div></div>
+            <div class="field"><label>Status Jawatan</label><div class="input-wrap"><span class="input-icon">📌</span><select id="employmentStatus"><option value="">Sila pilih</option><option>Tetap</option><option>Kontrak</option></select></div></div>
+            <div class="field"><label>Tarikh Mula Kerja</label><div class="input-wrap"><span class="input-icon">📅</span><input id="startWorkDate" type="date"></div></div>
+            <div class="field"><label>Tempoh Bekerja</label><div class="input-wrap"><span class="input-icon">⏳</span><input id="workingPeriod" placeholder="Contoh: 3 tahun"></div></div>
+            <div class="field"><label>HR / Unit Gaji benarkan tukar akaun gaji?</label><div class="input-wrap"><span class="input-icon">✅</span><select id="hrAllowSalaryTransfer"><option value="">Sila pilih</option><option>Ya</option><option>Tidak</option></select></div></div>
+          </div>
+        </section>
+
+        <section id="kerajaanSection" class="form-section conditional">
+          <h2>Maklumat Tambahan Kerajaan</h2>
+          <div class="grid-2">
+            <div class="field"><label>Poskod Rumah</label><div class="input-wrap"><span class="input-icon">🏠</span><input id="homePostcode"></div></div>
+            <div class="field"><label>Pasangan Bekerja?</label><div class="input-wrap"><span class="input-icon">👥</span><select id="spouseWorking"><option value="">Sila pilih</option><option>Ya</option><option>Tidak</option></select></div></div>
+            <div class="field"><label>Anggaran Gaji Bersih Pasangan</label><div class="input-wrap"><span class="input-icon">💰</span><input id="spouseNetSalary" disabled placeholder="Tidak perlu isi"></div></div>
+          </div>
+          <div class="notice">Dokumen Kerajaan: IC, 3 bulan payslip, Penyata ANGKASA jika ada, Surat Penyelesaian Bank/Koperasi dan CTOS/CCRIS.</div>
+        </section>
+
+        <section id="swastaSection" class="form-section conditional">
+          <h2>Maklumat Tambahan Swasta</h2>
+          <div class="grid-2">
+            <div class="field"><label>Nama Majikan Sebelum</label><div class="input-wrap"><span class="input-icon">🏢</span><input id="previousEmployerName"></div></div>
+            <div class="field"><label>Jawatan di Majikan Sebelum</label><div class="input-wrap"><span class="input-icon">💼</span><input id="previousEmployerPosition"></div></div>
+            <div class="field"><label>Tempoh Bekerja di Majikan Sebelum</label><div class="input-wrap"><span class="input-icon">⏳</span><input id="previousEmployerPeriod"></div></div>
+            <div class="field"><label>Ada Sijil Professional?</label><div class="input-wrap"><span class="input-icon">🎓</span><select id="professionalCert"><option value="">Sila pilih</option><option>Ya</option><option>Tidak</option></select></div></div>
+            <div class="field"><label>Nyatakan Sijil Professional</label><div class="input-wrap"><span class="input-icon">📜</span><input id="professionalCertName" disabled placeholder="Tidak perlu isi"></div></div>
+          </div>
+          <div class="notice">Dokumen Swasta: IC, 6 bulan payslip, CTOS/CCRIS, EA Form jika ada, EPF dan sijil professional jika ada.</div>
+        </section>
+
+        <section class="form-section">
+          <h2>AKPK</h2>
+          <div class="grid-2">
+            <div class="field"><label>Dalam Program AKPK?</label><div class="input-wrap"><span class="input-icon">📋</span><select id="akpk"><option value="">Sila pilih</option><option>Ya</option><option>Tidak</option></select></div></div>
+            <div class="field"><label>Jika Ya, sudah tempoh berapa lama?</label><div class="input-wrap"><span class="input-icon">⏱️</span><input id="akpkPeriod" disabled placeholder="Tidak perlu isi"></div></div>
+          </div>
+        </section>
+
+        <section class="form-section">
+          <h2>CTOS / CCRIS</h2>
+          <div class="grid-2">
+            <div class="field"><label>Ada CTOS / CCRIS Report?</label><div class="input-wrap"><span class="input-icon">📄</span><select id="ctosOption"><option value="">Sila pilih</option><option value="Customer Ada Report">Ya, saya ada report</option><option value="Chika Bantu Semakan">Tidak, saya mahu Chika bantu semakan</option></select></div></div>
+          </div>
+          <div id="ctosConsentBox" class="notice conditional">
+            Dengan memilih option ini, pelanggan bersetuju memberi kebenaran kepada pihak Chika Jom Consult Solutions untuk membantu semakan CTOS/CCRIS bagi tujuan penilaian kelayakan pembiayaan.
+          </div>
+        </section>
+
+        <section class="form-section">
+          <h2>Upload Dokumen</h2>
+          <div class="notice">Format PDF/JPG/PNG sahaja. Max 5MB setiap file.</div>
+          <div class="grid-2">
+            <div class="field"><label>IC Document</label><div class="input-wrap"><span class="input-icon">🪪</span><input id="fileIC" type="file" accept=".pdf,.jpg,.jpeg,.png"></div></div>
+            <div class="field"><label>Payslip</label><div class="input-wrap"><span class="input-icon">📄</span><input id="filePayslip" type="file" accept=".pdf,.jpg,.jpeg,.png"></div></div>
+            <div class="field"><label>CTOS / CCRIS</label><div class="input-wrap"><span class="input-icon">📊</span><input id="fileCTOS" type="file" accept=".pdf,.jpg,.jpeg,.png"></div></div>
+            <div class="field"><label>Other Supporting Documents</label><div class="input-wrap"><span class="input-icon">📎</span><input id="fileOther" type="file" accept=".pdf,.jpg,.jpeg,.png"></div></div>
+          </div>
+        </section>
+
+        <button id="submitBtn" class="btn btn-black submit-wide" type="submit"><span class="arrow">➜</span> SUBMIT APPLICATION</button>
+        <p style="color:#777;font-size:13px;text-align:center;margin-top:18px">🔒 Maklumat anda adalah sulit dan dilindungi.</p>
+      </form>
+    </div>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>

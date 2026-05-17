@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pengurusan Ejen - Chika Jom Consult</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="admin-layout">
+    <aside class="sidebar">
+      <img class="logo" src="https://lh3.googleusercontent.com/d/1hftGSs3xj2bwCRFUTE6UmQMhX3uIrYqe" alt="Logo">
+      <nav class="side-menu">
+        <a href="admin.html">▣ Dashboard</a>
+        <a href="admin.html#applications">▤ Permohonan</a>
+        <a class="active" href="agent-management.html">♙ Ejen</a>
+        <a href="#">▧ Dokumen</a>
+        <a href="#">⚙ Tetapan</a>
+        <a href="index.html">↩ Log Keluar</a>
+      </nav>
+    </aside>
+
+    <main class="admin-main">
+      <header class="admin-top">
+        <h1>Pengurusan Ejen</h1>
+        <a class="btn btn-pink" href="#add">+ Tambah Ejen</a>
+      </header>
+
+      <section id="add" class="card agent-form">
+        <h2>Tambah / Kemaskini Ejen</h2>
+        <form id="agentForm" class="grid-2">
+          <div class="field"><label>ID Ejen</label><div class="input-wrap"><span class="input-icon">🆔</span><input id="agentId" placeholder="Contoh: AG001" required></div></div>
+          <div class="field"><label>Nama Ejen</label><div class="input-wrap"><span class="input-icon">👤</span><input id="agentName" placeholder="Masukkan nama ejen" required></div></div>
+          <div class="field"><label>No. Telefon</label><div class="input-wrap"><span class="input-icon">☎️</span><input id="agentPhone" placeholder="Contoh: 60123456789" required></div></div>
+          <div class="field"><label>WhatsApp Name / Tag</label><div class="input-wrap"><span class="input-icon">@</span><input id="agentTag" placeholder="@nama"></div></div>
+          <div class="field"><label>Status</label><div class="input-wrap"><span class="input-icon yellow">📌</span><select id="agentStatus"><option>Active</option><option>Inactive</option></select></div></div>
+          <div style="display:flex;align-items:flex-end"><button class="btn btn-pink" type="submit">Simpan Ejen</button></div>
+        </form>
+      </section>
+
+      <section class="card" style="padding:22px">
+        <h2>Senarai Ejen</h2>
+        <div class="table-card">
+          <table>
+            <thead>
+              <tr>
+                <th>ID Ejen</th>
+                <th>Nama Ejen</th>
+                <th>Telefon</th>
+                <th>Tag</th>
+                <th>Status</th>
+                <th>Link Kerajaan</th>
+                <th>Link Swasta</th>
+                <th>Tindakan</th>
+              </tr>
+            </thead>
+            <tbody id="agentsTableBody"></tbody>
+          </table>
+        </div>
+        <div class="notice" style="margin-top:18px">Link boleh disambungkan ke TinyURL kemudian. Buat masa ini, butang salin akan copy link Cloudflare Pages.</div>
+      </section>
+    </main>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
