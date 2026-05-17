@@ -10,24 +10,13 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<script>
-const password = prompt("Enter Admin Password");
-
-<script>
-const ADMIN_PASSWORD = "ChikaAdmin2026";
-
+  <script>
 if(sessionStorage.getItem("admin_auth") !== "true"){
-
-  const password = prompt("Enter Admin Password");
-
-  if(password === ADMIN_PASSWORD){
-    sessionStorage.setItem("admin_auth", "true");
-  } else {
-    alert("Access Denied");
-    window.location.href = "index.html";
-  }
-
+  window.location.href = "admin-login.html";
 }
+</script>
+<script>
+
 </script>
   
   <div class="admin-layout">
