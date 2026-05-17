@@ -608,6 +608,46 @@ function initAgentsPage() {
   }
 }
 
+function updateStatusToSheet(orderId, status, remark) {
+  return new Promise(function(resolve, reject) {
+    const callbackName = "cb_update_" + Date.now();
+
+    window[callbackName] = function(data) {
+      resolve(data);
+      delete window[callbackName];
+      script.remove();
+    };
+
+    const script = document.createElement("script");
+
+    script.src =
+      CONFIG.APPS_SCRIPT_URL +
+      "?action=updateStatus" +
+      "&orderId=" + encodeURIComponent(orderId) +
+      "&status=" + encodeURIComponent(status) +
+      "&remark=" + encodeURIComponent(remark) +
+      "&callback=" + callbackName;
+
+    script.onerror = reject;
+    document.body.appendChild(script);
+  });
+}
+
+async function saveStatusUpdate() {
+  const orderId = $("modalOrderId").value;
+  const status = $("statusSelect").value;
+  const remark = $("remarkText").value.trim();
+
+  const result = await updateStatusToSheet(orderId, status, remark);
+
+  if (result.success) {
+    alert("Status berjaya dikemaskini.");
+    closeStatusModal();
+    await initAdminPage();
+  } else {
+    alert("Gagal update status.");
+  }
+}
 /* =========================
    INIT
 ========================= */
