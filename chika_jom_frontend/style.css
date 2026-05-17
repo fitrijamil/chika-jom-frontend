@@ -829,3 +829,6 @@ th{
     width:160px;
   }
 }
+.quick-action-grid{
+  display:none !important;
+}
