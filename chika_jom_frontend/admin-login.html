@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Login</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <main class="apply-page">
+    <div class="apply-shell">
+
+      <div class="card form-card" style="max-width:420px;margin:80px auto;text-align:center;">
+
+        <img class="logo" src="https://lh3.googleusercontent.com/d/1hftGSs3xj2bwCRFUTE6UmQMhX3uIrYqe" style="margin:auto;">
+
+        <h1 style="margin-top:20px;">Admin Login</h1>
+
+        <p style="color:#666;">
+          Login untuk akses dashboard admin.
+        </p>
+
+        <div class="field" style="margin-top:25px;text-align:left;">
+          <label>Email</label>
+          <div class="input-wrap">
+            <span class="input-icon">✉️</span>
+            <input id="loginEmail" type="email" placeholder="admin@gmail.com">
+          </div>
+        </div>
+
+        <div class="field" style="margin-top:18px;text-align:left;">
+          <label>Password</label>
+          <div class="input-wrap">
+            <span class="input-icon">🔒</span>
+            <input id="loginPassword" type="password" placeholder="Password">
+          </div>
+        </div>
+
+        <button class="btn btn-black submit-wide" onclick="loginAdmin()">
+          LOGIN
+        </button>
+
+      </div>
+
+    </div>
+  </main>
+
+<script>
+const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwlvRLS6XKBBLObcEcofuk7UvoPLj470nofWJ2ZdrEvCzmNU57S-EXE7J7zKTYQviL8MA/exec";
+
+function jsonp(url){
+  return new Promise((resolve,reject)=>{
+
+    const callbackName = "cb_" + Date.now();
+
+    window[callbackName] = function(data){
+      resolve(data);
+      delete window[callbackName];
+      script.remove();
+    };
+
+    const script = document.createElement("script");
+
+    script.src = url + "&callback=" + callbackName;
+
+    script.onerror = reject;
+
+    document.body.appendChild(script);
+
+  });
+}
+
+async function loginAdmin(){
+
+  const email = document.getElementById("loginEmail").value.trim();
+  const password = document.getElementById("loginPassword").value.trim();
+
+  if(!email || !password){
+    alert("Sila isi email dan password.");
+    return;
+  }
+
+  try{
+
+    const result = await jsonp(
+      APPS_SCRIPT_URL +
+      "?action=adminLogin" +
+      "&email=" + encodeURIComponent(email) +
+      "&password=" + encodeURIComponent(password)
+    );
+
+    if(result.success){
+
+      sessionStorage.setItem("admin_auth","true");
+      sessionStorage.setItem("admin_email", result.email);
+      sessionStorage.setItem("admin_name", result.name);
+      sessionStorage.setItem("admin_role", result.role);
+
+      window.location.href = "admin.html";
+
+    }else{
+
+      alert("Email atau password salah.");
+
+    }
+
+  }catch(err){
+
+    console.error(err);
+    alert("Login gagal.");
+
+  }
+
+}
+</script>
+
+</body>
+</html>
