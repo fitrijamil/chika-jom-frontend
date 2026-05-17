@@ -40,7 +40,7 @@ if(sessionStorage.getItem("admin_auth") !== "true"){
         <form id="agentForm" class="grid-2">
           <div class="field"><label>ID Ejen</label><div class="input-wrap"><span class="input-icon">🆔</span><input id="agentId" placeholder="Contoh: AG001" required></div></div>
           <div class="field"><label>Nama Ejen</label><div class="input-wrap"><span class="input-icon">👤</span><input id="agentName" placeholder="Masukkan nama ejen" required></div></div>
-          <div class="field"><label>No. Telefon</label><div class="input-wrap"><span class="input-icon">☎️</span><input id="agentPhone" placeholder="Contoh: 60123456789" required></div></div>
+          <div class="field"><label>No. Telefon</label><div class="input-wrap"><span class="input-icon">☎️</span><input id="agentPhone" placeholder="Contoh: 0123456789" required></div></div>
           <div class="field"><label>WhatsApp Name / Tag</label><div class="input-wrap"><span class="input-icon">@</span><input id="agentTag" placeholder="@nama"></div></div>
           <div class="field"><label>Status</label><div class="input-wrap"><span class="input-icon yellow">📌</span><select id="agentStatus"><option>Active</option><option>Inactive</option></select></div></div>
           <div style="display:flex;align-items:flex-end"><button class="btn btn-pink" type="submit">Simpan Ejen</button></div>
@@ -56,11 +56,9 @@ if(sessionStorage.getItem("admin_auth") !== "true"){
                 <th>ID Ejen</th>
                 <th>Nama Ejen</th>
                 <th>Telefon</th>
-                <th>Tag</th>
                 <th>Status</th>
                 <th>Link Kerajaan</th>
                 <th>Link Swasta</th>
-                <th>Tindakan</th>
               </tr>
             </thead>
             <tbody id="agentsTableBody"></tbody>
